@@ -358,3 +358,65 @@ export interface DashboardProps {
   showCohorts?: boolean
   timeRange?: '7d' | '30d' | '90d'
 }
+
+// ============== FUNNEL PLANNING & PROJECTIONS ==============
+
+/**
+ * Configuration for business metric projections from funnel data
+ */
+export interface FunnelProjectionConfig {
+  /** Average Order Value in USD */
+  averageOrderValue: number
+  /** Expected customer lifespan in months */
+  customerLifespanMonths: number
+  /** Gross margin percentage (0-1) */
+  grossMargin: number
+  /** Monthly churn rate (0-1) */
+  monthlyChurnRate: number
+  /** Expansion revenue rate per customer per month (0-1) */
+  expansionRate: number
+  /** Cost per lead/trial acquisition */
+  cacPerLead: number
+}
+
+/**
+ * Metrics derived from marketing funnel stage data (planned/projected)
+ */
+export interface DerivedFunnelMetrics {
+  /** Overall conversion rate from first to last stage (percentage 0-100) */
+  overallConversionRate: number
+  /** Weighted average stage conversion rate (percentage 0-100) */
+  averageStageConversionRate: number
+  /** Projected monthly revenue from funnel */
+  projectedMonthlyRevenue: number
+  /** Projected LTV based on funnel assumptions */
+  projectedLTV: number
+  /** Projected CAC based on acquisition cost assumptions */
+  projectedCAC: number
+  /** Projected LTV:CAC ratio */
+  projectedLTVCACRatio: number
+  /** Estimated customers acquired per period */
+  projectedCustomersAcquired: number
+  /** Stage-by-stage conversion analysis */
+  stageConversions: Array<{
+    stageName: string
+    stageValue: number
+    conversionRate: number  // from this stage to next (percentage 0-100)
+    cumulativeRate: number  // from first stage to this (percentage 0-100)
+  }>
+}
+
+/**
+ * Mode for displaying metrics: actual performance, planned projections, or both
+ */
+export type MetricsMode = 'actual' | 'planned' | 'both'
+
+export interface AnalyticsDashboardProps {
+  compact?: boolean
+  showCohorts?: boolean
+  timeRange?: '7d' | '30d' | '90d'
+  mode?: MetricsMode
+  onModeChange?: (mode: MetricsMode) => void
+  projectionConfig?: FunnelProjectionConfig
+  onProjectionConfigChange?: (config: Partial<FunnelProjectionConfig>) => void
+}

@@ -97,7 +97,7 @@ function toDisplayFunnel(mf: MarketingFunnel): Funnel {
 }
 
 export default function App() {
-  const { identify, track, user, isReady, setSegment } = useAnalytics()
+  const { identify, track, user, isReady, setSegment, setSelectedFunnel: setContextSelectedFunnel } = useAnalytics()
   const [funnel, setFunnel] = useState<Funnel>(SAMPLE_FUNNEL)
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('theme')
@@ -347,7 +347,10 @@ export default function App() {
         setSelectedCompany(fullCompany)
         setViewMode('detail')
         if (fullCompany.funnels && fullCompany.funnels.length > 0) {
-          setFunnel(toDisplayFunnel(fullCompany.funnels[0]))
+          const displayFunnel = toDisplayFunnel(fullCompany.funnels[0])
+          setFunnel(displayFunnel)
+          // Also set in analytics context for planning metrics
+          setContextSelectedFunnel && setContextSelectedFunnel(displayFunnel)
         }
       }
     } catch (e) {
@@ -357,7 +360,10 @@ export default function App() {
 
   const selectFunnel = (mf: MarketingFunnel) => {
     setSelectedFunnel(mf)
-    setFunnel(toDisplayFunnel(mf))
+    const displayFunnel = toDisplayFunnel(mf)
+    setFunnel(displayFunnel)
+    // Also set funnel in analytics context for planning metrics
+    setContextSelectedFunnel && setContextSelectedFunnel(displayFunnel)
     setViewMode('detail')
   }
 

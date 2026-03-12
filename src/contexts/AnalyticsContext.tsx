@@ -1,10 +1,11 @@
 /**
  * Analytics Context
- * React context for funnel analytics SDK
+ * React context for funnel analytics SDK and funnel planning projections
  */
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import React, { createContext, useContext, useEffect, useState, useMemo, ReactNode, useCallback } from 'react'
 import { FunnelSDK, initFunnelSDK, getFunnelSDK, FunnelSDKConfig } from '../sdk/AnalyticsSDK'
+import { FunnelMetricsCalculator } from '../services/FunnelMetricsCalculator'
 import type {
   User,
   ActivationStatus,
@@ -14,7 +15,12 @@ import type {
   Cohort,
   FunnelMetrics,
   EventType,
-  UserSegment
+  UserSegment,
+  Funnel,
+  FunnelProjectionConfig,
+  DerivedFunnelMetrics,
+  MetricsMode,
+  MarketingFunnel
 } from '../types'
 
 interface AnalyticsContextValue {
@@ -29,6 +35,16 @@ interface AnalyticsContextValue {
   track: (event: EventType, properties?: Record<string, any>) => void
   setSegment: (segment: UserSegment) => void
   completeOnboardingStep: (stepId: string) => void
+
+  // Funnel planning
+  mode: MetricsMode
+  setMode: (mode: MetricsMode) => void
+  selectedFunnel: Funnel | null
+  setSelectedFunnel: (funnel: Funnel | null) => void
+  plannedMetrics: DerivedFunnelMetrics | null
+  projectionConfig: FunnelProjectionConfig
+  updateProjectionConfig: (config: Partial<FunnelProjectionConfig>) => void
+  getDisplayMetrics: () => (FunnelMetrics & Partial<DerivedFunnelMetrics>) | null
 }
 
 const AnalyticsContext = createContext<AnalyticsContextValue | null>(null)
@@ -61,6 +77,40 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
   const [cohorts, setCohorts] = useState<Cohort[]>([])
   const [opportunities, setOpportunities] = useState<ExpansionOpportunity[]>([])
   const [isReady, setIsReady] = useState(false)
+
+  // Funnel planning state
+  const [mode, setMode] = useState<MetricsMode>('actual')
+  const [selectedFunnel, setSelectedFunnel] = useState<Funnel | null>(null)
+  const [plannedMetrics, setPlannedMetrics] = useState<DerivedFunnelMetrics | null>(null)
+  const [projectionConfig, setProjectionConfig] = useState<FunnelProjectionConfig>({
+    averageOrderValue: 49,
+    customerLifespanMonths: 24,
+    grossMargin: 0.70,
+    monthlyChurnRate: 0.05,
+    expansionRate: 0.02,
+    cacPerLead: 150
+  })
+
+  // Initialize calculator with config
+  const calculator = useMemo(() =>
+    new FunnelMetricsCalculator(projectionConfig),
+    [projectionConfig]
+  )
+
+  // Calculate planned metrics when funnel or config changes
+  useEffect(() => {
+    if (selectedFunnel) {
+      const derived = calculator.calculateFromFunnel(selectedFunnel)
+      setPlannedMetrics(derived)
+    } else {
+      setPlannedMetrics(null)
+    }
+  }, [selectedFunnel, calculator])
+
+  // Update projection config
+  const updateProjectionConfig = useCallback((updates: Partial<FunnelProjectionConfig>) => {
+    setProjectionConfig(prev => ({ ...prev, ...updates }))
+  }, [])
 
   // Initialize SDK
   useEffect(() => {
@@ -160,6 +210,40 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     return () => clearInterval(interval)
   }, [sdk, user])
 
+  // Compute display metrics based on mode
+  const getDisplayMetrics = useCallback((): (FunnelMetrics & Partial<DerivedFunnelMetrics>) | null => {
+    if (!metrics && !plannedMetrics) return null
+
+    if (mode === 'actual' && metrics) {
+      return metrics
+    } else if (mode === 'planned' && plannedMetrics) {
+      // Convert DerivedFunnelMetrics to FunnelMetrics shape
+      return {
+        ...plannedMetrics,
+        totalVisitors: plannedMetrics.projectedCustomersAcquired,
+        totalLeads: plannedMetrics.projectedCustomersAcquired * (plannedMetrics.overallConversionRate / 100) || 0,
+        activationRate: 0, // not applicable for planned
+        conversionRate: plannedMetrics.overallConversionRate / 100,
+        averageTrialLength: 0,
+        timeToFirstValue: 0,
+        day1Retention: 0,
+        day7Retention: 0,
+        day30Retention: 0,
+        churnRate: projectionConfig.monthlyChurnRate,
+        expansionMRR: 0
+      } as (FunnelMetrics & Partial<DerivedFunnelMetrics>)
+    } else if (mode === 'both' && metrics && plannedMetrics) {
+      // Return actual, but enhance with projections
+      return {
+        ...metrics,
+        ...plannedMetrics,
+        ltv: plannedMetrics.projectedLTV,
+        cac: plannedMetrics.projectedCAC
+      } as (FunnelMetrics & Partial<DerivedFunnelMetrics>)
+    }
+    return null
+  }, [mode, metrics, plannedMetrics, projectionConfig])
+
   const value: AnalyticsContextValue = {
     sdk,
     user,
@@ -171,7 +255,16 @@ export const AnalyticsProvider: React.FC<AnalyticsProviderProps> = ({
     identify: (userId, traits) => sdk?.identify(userId, traits),
     track: (event, props) => sdk?.track(event, props),
     setSegment: (segment) => sdk?.setSegment(segment),
-    completeOnboardingStep: (stepId) => sdk?.completeOnboardingStep(stepId)
+    completeOnboardingStep: (stepId) => sdk?.completeOnboardingStep(stepId),
+    // Funnel planning
+    mode,
+    setMode,
+    selectedFunnel,
+    setSelectedFunnel,
+    plannedMetrics,
+    projectionConfig,
+    updateProjectionConfig,
+    getDisplayMetrics
   }
 
   return (
@@ -233,4 +326,34 @@ export const useCohortRetention = (cohortId?: string): { day: number; retention:
   }
 
   return curve
+}
+
+// ============== FUNNEL PLANNING HOOKS ==============
+
+export const useMetricsMode = (): { mode: MetricsMode; setMode: (mode: MetricsMode) => void } => {
+  const { mode, setMode } = useAnalytics()
+  return { mode, setMode }
+}
+
+export const useSelectedFunnel = (): { funnel: Funnel | null; setFunnel: (funnel: Funnel | null) => void } => {
+  const { selectedFunnel, setSelectedFunnel } = useAnalytics()
+  return { funnel: selectedFunnel, setFunnel: setSelectedFunnel }
+}
+
+export const usePlannedMetrics = (): DerivedFunnelMetrics | null => {
+  const { plannedMetrics } = useAnalytics()
+  return plannedMetrics
+}
+
+export const useProjectionConfig = (): {
+  config: FunnelProjectionConfig
+  update: (updates: Partial<FunnelProjectionConfig>) => void
+} => {
+  const { projectionConfig, updateProjectionConfig } = useAnalytics()
+  return { config: projectionConfig, update: updateProjectionConfig }
+}
+
+export const useDisplayMetrics = (): (FunnelMetrics & Partial<DerivedFunnelMetrics>) | null => {
+  const { getDisplayMetrics } = useAnalytics()
+  return getDisplayMetrics()
 }
