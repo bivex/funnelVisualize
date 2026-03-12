@@ -35,6 +35,81 @@
           {"name": "Closed Won", "value": 15, "conversionRate": 30}
         ],
         "totalValue": 865
+      },
+      {
+        "id": "funnel-3",
+        "name": "Content Marketing Leads",
+        "description": "Content fueled lead generation and nurturing",
+        "types": ["Acquisition", "Nurturing"],
+        "impact": "Moderate",
+        "stages": [
+          {"name": "Content Visitors", "value": 25000},
+          {"name": "Blog Subscribers", "value": 1500, "conversionRate": 6},
+          {"name": "MQLs", "value": 300, "conversionRate": 20},
+          {"name": "SQLs", "value": 120, "conversionRate": 40},
+          {"name": "Opportunities", "value": 24, "conversionRate": 20}
+        ],
+        "totalValue": 2544
+      },
+      {
+        "id": "funnel-4",
+        "name": "Customer Retention",
+        "description": "Keep customers active and reduce churn",
+        "types": ["Retention", "Nurturing"],
+        "impact": "High",
+        "stages": [
+          {"name": "Active Users", "value": 5000},
+          {"name": "Weekly Active", "value": 3500, "conversionRate": 70},
+          {"name": "At Risk", "value": 700, "conversionRate": 20},
+          {"name": "Recovered", "value": 280, "conversionRate": 40},
+          {"name": "Retained", "value": 4200, "conversionRate": 84}
+        ],
+        "totalValue": 4200
+      },
+      {
+        "id": "funnel-5",
+        "name": "Referral Program",
+        "description": "Customer referrals and partner leads",
+        "types": ["Referral", "Acquisition"],
+        "impact": "Moderate to High",
+        "stages": [
+          {"name": "Referrers", "value": 800},
+          {"name": "Referrals Sent", "value": 2400, "conversionRate": 75},
+          {"name": "Referral Visits", "value": 1200, "conversionRate": 50},
+          {"name": "Referral Signups", "value": 240, "conversionRate": 20},
+          {"name": "Converted Customers", "value": 48, "conversionRate": 20}
+        ],
+        "totalValue": 848
+      },
+      {
+        "id": "funnel-6",
+        "name": "Product-Led Growth",
+        "description": "Self-serve freemium to paid conversion",
+        "types": ["Acquisition", "Activation", "Revenue"],
+        "impact": "High",
+        "stages": [
+          {"name": "Freemium Users", "value": 50000},
+          {"name": "Feature Activated", "value": 25000, "conversionRate": 50},
+          {"name": "Power Users", "value": 5000, "conversionRate": 20},
+          {"name": "Trial Started", "value": 1500, "conversionRate": 30},
+          {"name": "Paid Subscribers", "value": 225, "conversionRate": 15}
+        ],
+        "totalValue": 52225
+      },
+      {
+        "id": "funnel-7",
+        "name": "Upsell & Expansion",
+        "description": "Revenue growth from existing customers. Average expansion deal: $6K ARR.",
+        "types": ["Revenue", "Retention"],
+        "impact": "Moderate",
+        "stages": [
+          {"name": "Eligible Customers", "value": 1200},
+          {"name": "Engaged", "value": 600, "conversionRate": 50},
+          {"name": "Interested", "value": 180, "conversionRate": 30},
+          {"name": "Proposal Sent", "value": 72, "conversionRate": 40},
+          {"name": "Upsell Closed", "value": 22, "conversionRate": 30}
+        ],
+        "totalValue": 2074
       }
     ]
   }
