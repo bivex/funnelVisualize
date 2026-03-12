@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Funnel Visualization Schema",
+  "description": "JSON schema for defining funnel visualizations",
+  "type": "object",
+  "required": ["id", "name", "stages"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the funnel"
+    },
+    "name": {
+      "type": "string",
+      "description": "Display name of the funnel"
+    },
+    "description": {
+      "type": "string",
+      "description": "Optional description of the funnel"
+    },
+    "stages": {
+      "type": "array",
+      "description": "Ordered array of funnel stages (top to bottom)",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "value"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique stage identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Stage display name"
+          },
+          "value": {
+            "type": "number",
+            "description": "Numerical value (e.g., user count, revenue)",
+            "minimum": 0
+          },
+          "color": {
+            "type": "string",
+            "description": "Optional hex color for this stage (e.g., #3B82F6)",
+            "pattern": "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Additional custom data for this stage",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "settings": {
+      "type": "object",
+      "description": "Visualization settings",
+      "properties": {
+        "theme": {
+          "type": "string",
+          "enum": ["light", "dark", "auto"],
+          "default": "auto"
+        },
+        "showPercentages": {
+          "type": "boolean",
+          "default": true
+        },
+        "showValues": {
+          "type": "boolean",
+          "default": true
+        },
+        "animationEnabled": {
+          "type": "boolean",
+          "default": true
+        },
+        "layout": {
+          "type": "string",
+          "enum": ["vertical", "horizontal", "centered"],
+          "default": "vertical"
+        },
+        "titleFontSize": {
+          "type": "number",
+          "default": 24
+        },
+        "stageFontSize": {
+          "type": "number",
+          "default": 14
+        }
+      }
+    },
+    "createdAt": {
+      "type": "string",
+      "description": "ISO timestamp when funnel was created"
+    },
+    "updatedAt": {
+      "type": "string",
+      "description": "ISO timestamp when funnel was last updated"
+    }
+  }
+}

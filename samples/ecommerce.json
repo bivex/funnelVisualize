@@ -1,0 +1,18 @@
+{
+  "id": "ecommerce-conversion",
+  "name": "E-Commerce Conversion",
+  "description": "Customer journey from landing to purchase",
+  "stages": [
+    { "id": "s1", "name": "Website Visits", "value": 10000, "color": "#6366F1" },
+    { "id": "s2", "name": "Product Views", "value": 6500, "color": "#8B5CF6" },
+    { "id": "s3", "name": "Add to Cart", "value": 3200, "color": "#A855F7" },
+    { "id": "s4", "name": "Checkout Started", "value": 2100, "color": "#D946EF" },
+    { "id": "s5", "name": "Purchase Complete", "value": 1800, "color": "#22C55E" }
+  ],
+  "settings": {
+    "layout": "vertical",
+    "showPercentages": true,
+    "showValues": true,
+    "animationEnabled": true
+  }
+}

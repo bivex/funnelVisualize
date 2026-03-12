@@ -1,0 +1,18 @@
+{
+  "id": "marketing- funnel",
+  "name": "Marketing Funnel",
+  "description": "Lead generation and nurturing",
+  "stages": [
+    { "id": "s1", "name": "Ad Impressions", "value": 100000, "color": "#F97316" },
+    { "id": "s2", "name": "Ad Clicks", "value": 15000, "color": "#FB923C" },
+    { "id": "s3", "name": "Landing Page Views", "value": 12000, "color": "#FDBA74" },
+    { "id": "s4", "name": "Form Submissions", "value": 3500, "color": "#FED7AA" },
+    { "id": "s5", "name": "Qualified Leads", "value": 1800, "color": "#22C55E" }
+  ],
+  "settings": {
+    "layout": "vertical",
+    "showPercentages": true,
+    "showValues": true,
+    "animationEnabled": true
+  }
+}

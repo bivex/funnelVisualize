@@ -1,0 +1,18 @@
+{
+  "id": "content-engagement",
+  "name": "Content Engagement",
+  "description": "Blog post reader journey",
+  "stages": [
+    { "id": "s1", "name": "Page Views", "value": 25000, "color": "#EC4899" },
+    { "id": "s2", "name": "Read 25%", "value": 18000, "color": "#F472B6" },
+    { "id": "s3", "name": "Read 50%", "value": 12000, "color": "#F9A8D4" },
+    { "id": "s4", "name": "Read 75%", "value": 7000, "color": "#FBCFE8" },
+    { "id": "s5", "name": "Completed", "value": 4500, "color": "#FDA4AF" }
+  ],
+  "settings": {
+    "layout": "horizontal",
+    "showPercentages": true,
+    "showValues": true,
+    "animationEnabled": true
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "saas-onboarding",
+  "name": "SaaS Onboarding Flow",
+  "description": "User onboarding conversion funnel",
+  "stages": [
+    { "id": "s1", "name": "Sign Up", "value": 5000, "color": "#3B82F6" },
+    { "id": "s2", "name": "Email Verified", "value": 4200, "color": "#0EA5E9" },
+    { "id": "s3", "name": "Profile Completed", "value": 2800, "color": "#06B6D4" },
+    { "id": "s4", "name": "First Action", "value": 1500, "color": "#14B8A6" },
+    { "id": "s5", "name": "Paid Plan", "value": 450, "color": "#22C55E" }
+  ],
+  "settings": {
+    "layout": "vertical",
+    "showPercentages": true,
+    "showValues": true,
+    "animationEnabled": true
+  }
+}
