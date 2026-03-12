@@ -8,7 +8,12 @@
       "Bash(git init:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(lsof -ti:3000 | xargs kill -9 2>/dev/null; sleep 1; bun run dev)"
+      "Bash(lsof -ti:3000 | xargs kill -9 2>/dev/null; sleep 1; bun run dev)",
+      "Bash(lsof -ti:3000 | xargs kill -9 2>/dev/null; sleep 2; bun run dev)",
+      "Bash(cd /Volumes/External/Code/funnelVisualize/src && node -e \"const fs = require\\('fs'\\); const code = fs.readFileSync\\('App.tsx', 'utf8'\\); const open = \\(code.match\\(/</g\\) || []\\).length; const close = \\(code.match\\(/>/g\\) || []\\).length; console.log\\('JSX tags - open:', open, 'close:', close\\); console.log\\('Balance:', open - close\\);\")",
+      "Bash(pkill -f \"bun.*index.ts\" 2>/dev/null; sleep 1; bun run dev)",
+      "Bash(npm run:*)",
+      "Bash(timeout 5 npm start 2>&1 || true)"
     ]
   }
 }

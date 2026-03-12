@@ -1,0 +1,593 @@
+/* Analytics Dashboard Styles */
+
+.analytics-dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.analytics-dashboard h2 {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.analytics-dashboard h3 {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+  color: var(--text-primary);
+}
+
+/* Compact Mode */
+.dashboard-compact {
+  padding: 1rem 2rem;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.metric-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-compact .metric-card {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.75rem;
+}
+
+/* Activation Banner */
+.activation-banner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  border-left: 4px solid var(--accent);
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  margin-bottom: 2rem;
+}
+
+.metric-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.metric-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.2s;
+}
+
+.metric-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.metric-hint {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: var(--bg-tertiary);
+  border-radius: 50%;
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  cursor: help;
+}
+
+.metric-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.metric-change {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.metric-change.positive {
+  color: #16a34a;
+}
+
+.metric-change.negative {
+  color: #dc2626;
+}
+
+.metric-target {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+.metric-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.metric-status.good {
+  color: #16a34a;
+}
+
+.metric-status.warning {
+  color: #ea580c;
+}
+
+/* Activation Section */
+.activation-section {
+  margin-bottom: 2rem;
+}
+
+.activation-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.activation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.activation-header h4 {
+  margin: 0;
+  font-size: 1.125rem;
+}
+
+.activation-badge {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.375rem 0.75rem;
+  border-radius: 6px;
+}
+
+.activation-badge.activated {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.activation-badge.in-progress {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.activation-progress {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.progress-bar-large {
+  flex: 1;
+  height: 12px;
+  background: var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-bar-large .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  transition: width 0.5s ease;
+}
+
+.progress-percentage {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 50px;
+  text-align: right;
+}
+
+.milestones-completed h5 {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.milestones-completed ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.milestone-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-tertiary);
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.milestone-icon {
+  color: #16a34a;
+  font-weight: 700;
+}
+
+.milestone-name {
+  color: var(--text-primary);
+}
+
+.milestone-reward {
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.activation-time p {
+  margin: 0.5rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.text-success {
+  color: #16a34a !important;
+}
+
+/* Opportunities Section */
+.opportunities-section {
+  margin-bottom: 2rem;
+}
+
+.opportunities-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.opportunity-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  border-left: 4px solid var(--accent);
+}
+
+.opportunity-card.priority-critical {
+  border-left-color: #dc2626;
+  background: var(--danger-bg);
+}
+
+.opportunity-card.priority-high {
+  border-left-color: #ea580c;
+}
+
+.opportunity-card.priority-medium {
+  border-left-color: #eab308;
+}
+
+.opportunity-card.priority-low {
+  border-left-color: var(--text-muted);
+}
+
+.opportunity-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.priority-badge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.priority-badge.critical {
+  background: #dc2626;
+  color: white;
+}
+
+.priority-badge.high {
+  background: #ea580c;
+  color: white;
+}
+
+.priority-badge.medium {
+  background: #eab308;
+  color: white;
+}
+
+.priority-badge.low {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+.opportunity-type {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.opportunity-card h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.opportunity-trigger {
+  margin: 0 0 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.opportunity-value {
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.opportunity-timing {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.btn-action {
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-action:hover {
+  background: var(--accent-hover);
+}
+
+/* Cohort Section */
+.cohorts-section {
+  margin-bottom: 2rem;
+}
+
+.cohort-chart {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.retention-chart {
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+}
+
+.cohort-table {
+  overflow-x: auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+
+.cohort-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.cohort-table th,
+.cohort-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cohort-table th {
+  background: var(--bg-tertiary);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.cohort-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cohort-table tr:hover td {
+  background: var(--bg-tertiary);
+}
+
+/* Health Section */
+.health-section {
+  margin-bottom: 2rem;
+}
+
+.health-score {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.score-ring {
+  flex-shrink: 0;
+}
+
+.circular-chart {
+  width: 120px;
+  height: 120px;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: var(--border-color);
+  strokeWidth: 3;
+}
+
+.circle {
+  fill: none;
+  stroke: var(--accent);
+  strokeWidth: 3;
+  strokeLinecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+@keyframes progress {
+  0% { strokeDasharray: "0 100"; }
+}
+
+.percentage {
+  fill: var(--text-primary);
+  font-size: 8px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.health-breakdown {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.health-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.health-item .label {
+  width: 120px;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.health-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.health-bar .fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.health-item .value {
+  width: 60px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: right;
+  color: var(--text-primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .metric-cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .health-score {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .health-breakdown {
+    width: 100%;
+  }
+
+  .health-item {
+    justify-content: space-between;
+  }
+
+  .health-item .label {
+    width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .metric-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .activation-banner {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .cohort-table {
+    font-size: 0.75rem;
+  }
+
+  .cohort-table th,
+  .cohort-table td {
+    padding: 0.5rem;
+  }
+}
