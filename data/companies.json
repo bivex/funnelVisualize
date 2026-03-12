@@ -1,0 +1,41 @@
+[
+  {
+    "id": "company-1",
+    "name": "TechFlow SaaS",
+    "description": "B2B SaaS platform for project management",
+    "industry": "Software",
+    "website": "https://techflow.example.com",
+    "funnels": [
+      {
+        "id": "funnel-1",
+        "name": "Free Trial to Paid",
+        "description": "Convert trial users to paid subscribers",
+        "types": ["Acquisition", "Revenue"],
+        "impact": "Moderate to High",
+        "stages": [
+          {"name": "Website Visitors", "value": 50000},
+          {"name": "Signups", "value": 2500, "conversionRate": 5},
+          {"name": "Trial Started", "value": 2000, "conversionRate": 80},
+          {"name": "Trial Activated", "value": 1000, "conversionRate": 50},
+          {"name": "Paid Customers", "value": 200, "conversionRate": 20}
+        ],
+        "totalValue": 55700
+      },
+      {
+        "id": "funnel-2",
+        "name": "Enterprise Sales",
+        "description": "Enterprise deal flow from lead to close",
+        "types": ["Acquisition", "Revenue"],
+        "impact": "Moderate to High",
+        "stages": [
+          {"name": "Leads", "value": 500},
+          {"name": "Qualified", "value": 200, "conversionRate": 40},
+          {"name": "Demo Scheduled", "value": 100, "conversionRate": 50},
+          {"name": "Proposal Sent", "value": 50, "conversionRate": 50},
+          {"name": "Closed Won", "value": 15, "conversionRate": 30}
+        ],
+        "totalValue": 865
+      }
+    ]
+  }
+]

@@ -1,0 +1,109 @@
+[
+  {
+    "id": "tactic-1",
+    "name": "Exit-Intent Popup",
+    "description": "Show a popup when user tries to leave the page",
+    "category": "Acquisition",
+    "stage": "Consideration",
+    "difficulty": "Easy",
+    "impact": "Medium",
+    "template": {
+      "headline": "Wait! Don't leave empty-handed",
+      "cta": "Get 10% off your first order",
+      "type": "discount"
+    }
+  },
+  {
+    "id": "tactic-2",
+    "name": "Social Proof Badge",
+    "description": "Display trust badges and customer count",
+    "category": "Acquisition",
+    "stage": "Interest",
+    "difficulty": "Easy",
+    "impact": "Medium",
+    "template": {
+      "text": "Joined by 10,000+ customers",
+      "position": "header"
+    }
+  },
+  {
+    "id": "tactic-3",
+    "name": "Limited Time Offer",
+    "description": "Create urgency with countdown timer",
+    "category": "Revenue",
+    "stage": "Decision",
+    "difficulty": "Easy",
+    "impact": "High",
+    "template": {
+      "duration": 15,
+      "unit": "minutes",
+      "message": "Offer expires in"
+    }
+  },
+  {
+    "id": "tactic-4",
+    "name": "Free Trial Extension",
+    "description": "Offer extended trial for hesitant users",
+    "category": "Retention",
+    "stage": "Activation",
+    "difficulty": "Easy",
+    "impact": "High",
+    "template": {
+      "extensionDays": 14,
+      "trigger": "day 3 no usage"
+    }
+  },
+  {
+    "id": "tactic-5",
+    "name": "Referral Bonus",
+    "description": "Reward users for referring friends",
+    "category": "Referral",
+    "stage": "Advocacy",
+    "difficulty": "Medium",
+    "impact": "High",
+    "template": {
+      "reward": "$50 credit",
+      "friendReward": "20% off first order"
+    }
+  },
+  {
+    "id": "tactic-6",
+    "name": "Email Drip Campaign",
+    "description": "Automated email sequence for leads",
+    "category": "Nurturing",
+    "stage": "Consideration",
+    "difficulty": "Medium",
+    "impact": "High",
+    "template": {
+      "emails": 5,
+      "frequency": "daily",
+      "content": "educational"
+    }
+  },
+  {
+    "id": "tactic-7",
+    "name": "Cart Abandonment Recovery",
+    "description": "Email users who left items in cart",
+    "category": "Revenue",
+    "stage": "Decision",
+    "difficulty": "Easy",
+    "impact": "High",
+    "template": {
+      "timing": "1 hour after abandon",
+      "include": "product image, discount code"
+    }
+  },
+  {
+    "id": "tactic-8",
+    "name": "Onboarding Checklist",
+    "description": "Guide users through initial setup",
+    "category": "Activation",
+    "stage": "Activation",
+    "difficulty": "Medium",
+    "impact": "High",
+    "template": {
+      "steps": 5,
+      "reward": "completed badge"
+    }
+  }
+]
