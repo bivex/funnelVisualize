@@ -1,0 +1,689 @@
+import { useState, useEffect } from 'react'
+import type { Funnel } from './types'
+import FunnelVisualization from './components/FunnelVisualization'
+import FunnelBuilder from './components/FunnelBuilder'
+import './App.css'
+
+function generateId(): string {
+  return Math.random().toString(36).substring(2, 9)
+}
+
+const SAMPLE_FUNNEL: Funnel = {
+  id: generateId(),
+  name: 'E-Commerce Conversion',
+  description: 'Customer journey from landing to purchase',
+  stages: [
+    { id: generateId(), name: 'Website Visits', value: 10000, color: '#6366F1' },
+    { id: generateId(), name: 'Product Views', value: 6500, color: '#8B5CF6' },
+    { id: generateId(), name: 'Add to Cart', value: 3200, color: '#A855F7' },
+    { id: generateId(), name: 'Checkout Started', value: 2100, color: '#D946EF' },
+    { id: generateId(), name: 'Purchase Complete', value: 1800, color: '#22C55E' },
+  ],
+  settings: {
+    theme: 'light',
+    showPercentages: true,
+    showValues: true,
+    animationEnabled: true,
+    layout: 'vertical',
+    titleFontSize: 24,
+    stageFontSize: 14,
+  },
+}
+
+// Marketing funnel data type
+interface MarketingFunnel {
+  id: string
+  name: string
+  description: string
+  strategy: string
+  types: string[]
+  impact: string
+  stages: Array<{
+    name: string
+    value: number
+    conversionRate?: number
+  }>
+  totalValue: number
+}
+
+// Company data type
+interface Company {
+  id: string
+  name: string
+  description: string
+  industry: string
+  website?: string
+  funnels: MarketingFunnel[]
+  funnelsCount?: number
+}
+
+// Tactic data type
+interface Tactic {
+  id: string
+  name: string
+  description: string
+  category: string
+  stage: string
+  difficulty: string
+  impact: string
+  template: Record<string, any>
+}
+
+// Convert marketing funnel to display funnel
+function toDisplayFunnel(mf: MarketingFunnel): Funnel {
+  const colors = ['#6366F1', '#8B5CF6', '#A855F7', '#D946EF', '#EC4899', '#F43F5E', '#EF4444', '#F97316']
+  return {
+    id: mf.id,
+    name: mf.name,
+    description: mf.description,
+    stages: mf.stages.map((s, i) => ({
+      id: generateId(),
+      name: s.name,
+      value: s.value,
+      color: colors[i % colors.length],
+    })),
+    settings: {
+      theme: 'light',
+      showPercentages: true,
+      showValues: true,
+      animationEnabled: true,
+      layout: 'vertical',
+      titleFontSize: 24,
+      stageFontSize: 14,
+    },
+  }
+}
+
+export default function App() {
+  const [funnel, setFunnel] = useState<Funnel>(SAMPLE_FUNNEL)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const saved = localStorage.getItem('theme')
+    return saved === 'dark' ? 'dark' : 'light'
+  })
+
+  // Companies
+  const [companies, setCompanies] = useState<Company[]>([])
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
+  const [showCreateCompany, setShowCreateCompany] = useState(false)
+
+  // Marketing funnels (strategies)
+  const [marketingFunnels, setMarketingFunnels] = useState<MarketingFunnel[]>([])
+  const [selectedFunnel, setSelectedFunnel] = useState<MarketingFunnel | null>(null)
+
+  // Tactics
+  const [tactics, setTactics] = useState<Tactic[]>([])
+  const [selectedTactic, setSelectedTactic] = useState<Tactic | null>(null)
+  const [categoryFilter, setCategoryFilter] = useState('')
+  const [difficultyFilter, setDifficultyFilter] = useState('')
+  const [showCreateTactic, setShowCreateTactic] = useState(false)
+
+  // View state
+  const [viewMode, setViewMode] = useState<'companies' | 'strategies' | 'tactics' | 'detail' | 'builder'>('companies')
+  const [search, setSearch] = useState('')
+  const [typeFilter, setTypeFilter] = useState('')
+  const [page, setPage] = useState(1)
+
+  // New tactic form
+  const [newTactic, setNewTactic] = useState({
+    name: '',
+    description: '',
+    category: '',
+    stage: '',
+    difficulty: 'Medium',
+    impact: 'Medium',
+  })
+
+  // New company form
+  const [newCompany, setNewCompany] = useState({ name: '', description: '', industry: '', website: '' })
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  useEffect(() => {
+    loadCompanies()
+    loadMarketingFunnels()
+    loadTactics()
+  }, [search, typeFilter, page, categoryFilter, difficultyFilter])
+
+  async function loadCompanies() {
+    try {
+      const res = await fetch('/api/companies')
+      if (res.ok) {
+        const data = await res.json()
+        setCompanies(data.companies)
+      }
+    } catch (e) {
+      console.error('Failed to load companies:', e)
+    }
+  }
+
+  async function loadMarketingFunnels() {
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: '20',
+      })
+      if (search) params.set('search', search)
+      if (typeFilter) params.set('type', typeFilter)
+
+      const res = await fetch(`/api/funnels?${params}`)
+      if (res.ok) {
+        const data = await res.json()
+        setMarketingFunnels(data.funnels)
+      }
+    } catch (e) {
+      console.error('Failed to load funnels:', e)
+    }
+  }
+
+  async function loadTactics() {
+    try {
+      const params = new URLSearchParams()
+      if (search) params.set('search', search)
+      if (categoryFilter) params.set('category', categoryFilter)
+      if (difficultyFilter) params.set('difficulty', difficultyFilter)
+
+      const res = await fetch(`/api/tactics?${params}`)
+      if (res.ok) {
+        const data = await res.json()
+        setTactics(data.tactics)
+      }
+    } catch (e) {
+      console.error('Failed to load tactics:', e)
+    }
+  }
+
+  async function createTactic() {
+    try {
+      const res = await fetch('/api/tactics', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTactic),
+      })
+      if (res.ok) {
+        setNewTactic({
+          name: '',
+          description: '',
+          category: '',
+          stage: '',
+          difficulty: 'Medium',
+          impact: 'Medium',
+        })
+        setShowCreateTactic(false)
+        loadTactics()
+      }
+    } catch (e) {
+      console.error('Failed to create tactic:', e)
+    }
+  }
+
+  async function createCompany() {
+    try {
+      const res = await fetch('/api/companies', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCompany),
+      })
+      if (res.ok) {
+        setNewCompany({ name: '', description: '', industry: '', website: '' })
+        setShowCreateCompany(false)
+        loadCompanies()
+      }
+    } catch (e) {
+      console.error('Failed to create company:', e)
+    }
+  }
+
+  async function deleteCompany(id: string) {
+    if (!confirm('Delete this company?')) return
+    try {
+      const res = await fetch(`/api/companies/${id}`, { method: 'DELETE' })
+      if (res.ok) {
+        loadCompanies()
+        if (selectedCompany?.id === id) {
+          setSelectedCompany(null)
+          setViewMode('companies')
+        }
+      }
+    } catch (e) {
+      console.error('Failed to delete company:', e)
+    }
+  }
+
+  const selectCompany = async (company: Company) => {
+    try {
+      const res = await fetch(`/api/companies/${company.id}`)
+      if (res.ok) {
+        const fullCompany = await res.json()
+        setSelectedCompany(fullCompany)
+        setViewMode('detail')
+        if (fullCompany.funnels && fullCompany.funnels.length > 0) {
+          setFunnel(toDisplayFunnel(fullCompany.funnels[0]))
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load company details:', e)
+    }
+  }
+
+  const selectFunnel = (mf: MarketingFunnel) => {
+    setSelectedFunnel(mf)
+    setFunnel(toDisplayFunnel(mf))
+    setViewMode('detail')
+  }
+
+  const TYPES = ['Awareness', 'Acquisition', 'Activation', 'Retention', 'Referral', 'Revenue']
+  const IMPACTS = ['Moderate', 'Moderate to High']
+  const INDUSTRIES = ['Software', 'E-commerce', 'Finance', 'Healthcare', 'Education', 'Marketing', 'Other']
+  const CATEGORIES = ['Acquisition', 'Revenue', 'Retention', 'Referral', 'Nurturing', 'Activation']
+  const DIFFICULTIES = ['Easy', 'Medium', 'Hard']
+  const STAGES = ['Interest', 'Consideration', 'Decision', 'Activation', 'Advocacy', 'General']
+
+  return (
+    <div className="app">
+      <header className="app-header">
+        <h1>📊 Funnels Visualizer</h1>
+        <div className="header-actions">
+          <button
+            className="nav-btn"
+            onClick={() => setViewMode('companies')}
+            data-active={viewMode === 'companies'}
+          >
+            Companies
+          </button>
+          <button
+            className="nav-btn"
+            onClick={() => setViewMode('strategies')}
+            data-active={viewMode === 'strategies'}
+          >
+            Funnels
+          </button>
+          <button
+            className="nav-btn"
+            onClick={() => setViewMode('tactics')}
+            data-active={viewMode === 'tactics'}
+          >
+            Playbook
+          </button>
+          <button
+            className="nav-btn"
+            onClick={() => setViewMode('builder')}
+            data-active={viewMode === 'builder'}
+          >
+            Builder
+          </button>
+          <button
+            className="theme-toggle"
+            onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
+            title={theme === 'light' ? 'Dark mode' : 'Light mode'}
+          >
+            {theme === 'light' ? '🌙' : '☀️'}
+          </button>
+        </div>
+      </header>
+
+      {/* COMPANIES VIEW */}
+      {viewMode === 'companies' && (
+        <>
+          <div className="filters">
+            <button className="btn-primary" onClick={() => setShowCreateCompany(true)}>
+              + New Company
+            </button>
+          </div>
+
+          <main className="app-main funnel-list">
+            {companies.map(company => (
+              <div
+                key={company.id}
+                className="funnel-list-item company-card"
+                onClick={() => selectCompany(company)}
+              >
+                <div className="funnel-item-header">
+                  <h3>{company.name}</h3>
+                  <span className="badge">{company.industry}</span>
+                </div>
+                <p className="funnel-item-desc">{company.description}</p>
+                <div className="funnel-item-meta">
+                  <span>{company.funnelsCount || company.funnels?.length || 0} funnels</span>
+                  <button
+                    className="btn-icon btn-danger"
+                    onClick={(e) => { e.stopPropagation(); deleteCompany(company.id) }}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </main>
+
+          {showCreateCompany && (
+            <div className="modal-overlay" onClick={() => setShowCreateCompany(false)}>
+              <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <button className="modal-close" onClick={() => setShowCreateCompany(false)}>&times;</button>
+                <h2>Create Company</h2>
+                <div className="form-group">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    value={newCompany.name}
+                    onChange={e => setNewCompany({...newCompany, name: e.target.value})}
+                    placeholder="Company name"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Description</label>
+                  <input
+                    type="text"
+                    value={newCompany.description}
+                    onChange={e => setNewCompany({...newCompany, description: e.target.value})}
+                    placeholder="What does the company do?"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Industry</label>
+                  <select
+                    value={newCompany.industry}
+                    onChange={e => setNewCompany({...newCompany, industry: e.target.value})}
+                  >
+                    <option value="">Select industry...</option>
+                    {INDUSTRIES.map(i => <option key={i} value={i}>{i}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Website (optional)</label>
+                  <input
+                    type="text"
+                    value={newCompany.website}
+                    onChange={e => setNewCompany({...newCompany, website: e.target.value})}
+                    placeholder="https://example.com"
+                  />
+                </div>
+                <button className="btn-primary" onClick={createCompany}>
+                  Create Company
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* STRATEGIES VIEW */}
+      {viewMode === 'strategies' && (
+        <>
+          <div className="filters">
+            <input
+              type="text"
+              placeholder="Search funnels..."
+              value={search}
+              onChange={e => { setSearch(e.target.value); setPage(1) }}
+              className="search-input"
+            />
+            <select
+              value={typeFilter}
+              onChange={e => { setTypeFilter(e.target.value); setPage(1) }}
+              className="filter-select"
+            >
+              <option value="">All Types</option>
+              {TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
+          </div>
+
+          <main className="app-main funnel-list">
+            {marketingFunnels.map(mf => (
+              <div
+                key={mf.id}
+                className="funnel-list-item"
+                onClick={() => selectFunnel(mf)}
+              >
+                <div className="funnel-item-header">
+                  <h3>{mf.strategy}</h3>
+                  <span className={`badge badge-${mf.impact.toLowerCase().replace(/\s/g, '-')}`}>
+                    {mf.impact}
+                  </span>
+                </div>
+                <p className="funnel-item-desc">{mf.description.substring(0, 100)}...</p>
+                <div className="funnel-item-meta">
+                  <span>{mf.types.join(', ')}</span>
+                  <span>{mf.stages.length} stages</span>
+                </div>
+              </div>
+            ))}
+          </main>
+
+          <div className="pagination">
+            <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>
+              ← Previous
+            </button>
+            <span>Page {page}</span>
+            <button disabled={marketingFunnels.length < 20} onClick={() => setPage(p => p + 1)}>
+              Next →
+            </button>
+          </div>
+        </>
+      )}
+
+      {/* TACTICS VIEW */}
+      {viewMode === 'tactics' && (
+        <>
+          <div className="filters">
+            <input
+              type="text"
+              placeholder="Search playbook..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="search-input"
+            />
+            <select
+              value={categoryFilter}
+              onChange={e => setCategoryFilter(e.target.value)}
+              className="filter-select"
+            >
+              <option value="">All Categories</option>
+              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+            <select
+              value={difficultyFilter}
+              onChange={e => setDifficultyFilter(e.target.value)}
+              className="filter-select"
+            >
+              <option value="">All Difficulties</option>
+              {DIFFICULTIES.map(d => <option key={d} value={d}>{d}</option>)}
+            </select>
+            <button className="btn-primary" onClick={() => setShowCreateTactic(true)}>
+              + New Play
+            </button>
+          </div>
+
+          <main className="app-main funnel-list">
+            {tactics.map(tactic => (
+              <div
+                key={tactic.id}
+                className="funnel-list-item tactic-card"
+                onClick={() => setSelectedTactic(tactic)}
+              >
+                <div className="funnel-item-header">
+                  <h3>{tactic.name}</h3>
+                  <div className="tactic-badges">
+                    <span className="badge">{tactic.category}</span>
+                    <span className={`badge difficulty-${tactic.difficulty.toLowerCase()}`}>
+                      {tactic.difficulty}
+                    </span>
+                    <span className={`badge impact-${tactic.impact.toLowerCase()}`}>
+                      {tactic.impact}
+                    </span>
+                  </div>
+                </div>
+                <p className="funnel-item-desc">{tactic.description}</p>
+                <div className="funnel-item-meta">
+                  <span>Stage: {tactic.stage}</span>
+                  <button
+                    className="btn-primary btn-small"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      // Copy tactic template to clipboard
+                      navigator.clipboard.writeText(JSON.stringify(tactic.template, null, 2))
+                      alert('Template copied!')
+                    }}
+                  >
+                    Copy Template
+                  </button>
+                </div>
+              </div>
+            ))}
+          </main>
+
+          {showCreateTactic && (
+            <div className="modal-overlay" onClick={() => setShowCreateTactic(false)}>
+              <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <button className="modal-close" onClick={() => setShowCreateTactic(false)}>&times;</button>
+                <h2>Create Play</h2>
+                <div className="form-group">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    value={newTactic.name}
+                    onChange={e => setNewTactic({...newTactic, name: e.target.value})}
+                    placeholder="Tactic name"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Description</label>
+                  <input
+                    type="text"
+                    value={newTactic.description}
+                    onChange={e => setNewTactic({...newTactic, description: e.target.value})}
+                    placeholder="What does this tactic do?"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Category</label>
+                  <select
+                    value={newTactic.category}
+                    onChange={e => setNewTactic({...newTactic, category: e.target.value})}
+                  >
+                    <option value="">Select category...</option>
+                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Stage</label>
+                  <select
+                    value={newTactic.stage}
+                    onChange={e => setNewTactic({...newTactic, stage: e.target.value})}
+                  >
+                    <option value="">Select stage...</option>
+                    {STAGES.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Difficulty</label>
+                  <select
+                    value={newTactic.difficulty}
+                    onChange={e => setNewTactic({...newTactic, difficulty: e.target.value})}
+                  >
+                    {DIFFICULTIES.map(d => <option key={d} value={d}>{d}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label>Impact</label>
+                  <select
+                    value={newTactic.impact}
+                    onChange={e => setNewTactic({...newTactic, impact: e.target.value})}
+                  >
+                    {['Low', 'Medium', 'High'].map(i => <option key={i} value={i}>{i}</option>)}
+                  </select>
+                </div>
+                <button className="btn-primary" onClick={createTactic}>
+                  Create Play
+                </button>
+              </div>
+            </div>
+          )}
+
+          {selectedTactic && (
+            <div className="modal-overlay" onClick={() => setSelectedTactic(null)}>
+              <div className="modal-content" onClick={e => e.stopPropagation()}>
+                <button className="modal-close" onClick={() => setSelectedTactic(null)}>&times;</button>
+                <h2>{selectedTactic.name}</h2>
+                <p>{selectedTactic.description}</p>
+                <div className="detail-meta">
+                  <span className="badge">{selectedTactic.category}</span>
+                  <span className="badge">{selectedTactic.stage}</span>
+                  <span className="badge">{selectedTactic.difficulty}</span>
+                  <span className="badge">{selectedTactic.impact}</span>
+                </div>
+                <div className="template-view">
+                  <h4>Template</h4>
+                  <pre>{JSON.stringify(selectedTactic.template, null, 2)}</pre>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* DETAIL VIEW */}
+      {viewMode === 'detail' && (
+        <main className="app-main">
+          <button className="back-btn" onClick={() => setViewMode(selectedCompany ? 'companies' : 'strategies')}>
+            ← Back
+          </button>
+
+          {selectedCompany && (
+            <div className="detail-header">
+              <h2>{selectedCompany.name}</h2>
+              <p>{selectedCompany.description}</p>
+              <div className="detail-meta">
+                <span className="badge">{selectedCompany.industry}</span>
+                <span className="badge">{selectedCompany.funnels.length} funnels</span>
+              </div>
+
+              {/* Company funnels tabs */}
+              <div className="funnel-tabs">
+                {selectedCompany.funnels.map((f, i) => (
+                  <button
+                    key={f.id}
+                    className={`tab ${funnel.name === f.name ? 'active' : ''}`}
+                    onClick={() => setFunnel(toDisplayFunnel(f))}
+                  >
+                    {f.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {selectedFunnel && !selectedCompany && (
+            <div className="detail-header">
+              <h2>{selectedFunnel.strategy}</h2>
+              <p>{selectedFunnel.description}</p>
+              <div className="detail-meta">
+                <span className="badge">{selectedFunnel.types.join(', ')}</span>
+                <span className="badge">{selectedFunnel.impact}</span>
+              </div>
+            </div>
+          )}
+
+          <FunnelVisualization funnel={funnel} />
+        </main>
+      )}
+
+      {/* BUILDER VIEW */}
+      {viewMode === 'builder' && (
+        <main className="app-main">
+          <div className="builder-layout">
+            <div className="builder-panel">
+              <FunnelBuilder funnel={funnel} onChange={setFunnel} />
+            </div>
+            <div className="preview-panel">
+              <div className="preview-label">Live Preview</div>
+              <FunnelVisualization funnel={funnel} />
+            </div>
+          </div>
+        </main>
+      )}
+    </div>
+  )
+}

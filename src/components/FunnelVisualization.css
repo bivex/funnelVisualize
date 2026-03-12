@@ -1,0 +1,306 @@
+.funnel-container {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.funnel-title {
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.funnel-description {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.funnel-stages {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.funnel-horizontal .funnel-stages {
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0;
+  padding: 1rem 0;
+}
+
+.funnel-stage {
+  width: 100%;
+}
+
+.horizontal-stage-wrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.funnel-horizontal .funnel-stage {
+  width: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+}
+
+.funnel-horizontal .stage-bar-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.funnel-horizontal .stage-bar {
+  width: 100%;
+  min-height: 80px;
+  height: auto;
+  flex: 1;
+  writing-mode: horizontal-tb;
+  justify-content: center;
+}
+
+.funnel-horizontal .stage-content.horizontal {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.25rem;
+}
+
+.funnel-horizontal .stage-content {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.funnel-horizontal .stage-stats {
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.funnel-horizontal .drop-off-indicator {
+  margin-top: 0.5rem;
+  background: var(--bg-secondary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.funnel-horizontal .stage-connector {
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.stage-bar-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.stage-bar {
+  background: linear-gradient(135deg, var(--stage-color) 0%, var(--stage-color)cc 100%);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.stage-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.stage-bar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px var(--shadow);
+}
+
+.stage-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.stage-name {
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.stage-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stage-value {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.stage-percentage {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: white;
+}
+
+.drop-off-indicator {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--danger);
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.funnel-stage.animated .stage-bar {
+  animation: slideIn 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes slideIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.funnel-stage.animated:nth-child(1) .stage-bar { animation-delay: 0ms; }
+.funnel-stage.animated:nth-child(2) .stage-bar { animation-delay: 100ms; }
+.funnel-stage.animated:nth-child(3) .stage-bar { animation-delay: 200ms; }
+.funnel-stage.animated:nth-child(4) .stage-bar { animation-delay: 300ms; }
+.funnel-stage.animated:nth-child(5) .stage-bar { animation-delay: 400ms; }
+.funnel-stage.animated:nth-child(6) .stage-bar { animation-delay: 500ms; }
+.funnel-stage.animated:nth-child(7) .stage-bar { animation-delay: 600ms; }
+.funnel-stage.animated:nth-child(8) .stage-bar { animation-delay: 700ms; }
+.funnel-stage.animated:nth-child(9) .stage-bar { animation-delay: 800ms; }
+.funnel-stage.animated:nth-child(10) .stage-bar { animation-delay: 900ms; }
+
+.funnel-horizontal .funnel-stage.animated .stage-bar {
+  animation: slideInHorizontal 0.5s ease-out forwards;
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+@keyframes slideInHorizontal {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .funnel-container {
+    padding: 0.75rem;
+  }
+  
+  .funnel-title {
+    font-size: 1.25rem !important;
+  }
+  
+  .funnel-description {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+  
+  .stage-bar {
+    padding: 0.625rem 0.875rem;
+    min-height: 48px;
+  }
+  
+  .stage-content {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  
+  .stage-name {
+    font-size: 0.8rem;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .stage-stats {
+    flex-shrink: 0;
+    gap: 0.375rem;
+  }
+  
+  .stage-value {
+    font-size: 0.85rem;
+  }
+  
+  .stage-percentage {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+  }
+  
+  .drop-off-indicator {
+    font-size: 0.65rem;
+  }
+  
+  .funnel-horizontal .funnel-stages {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .horizontal-stage-wrapper {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .funnel-horizontal .stage-connector {
+    transform: rotate(90deg);
+    height: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .funnel-horizontal .funnel-stage {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .funnel-horizontal .stage-bar {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 50px;
+  }
+}
